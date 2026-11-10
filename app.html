@@ -70,6 +70,7 @@ button svg{width:20px;height:20px;flex:none}
 .wcard .word{font-size:34px;font-weight:700;white-space:nowrap}
 .wcard .ko{font-size:16px;color:var(--muted)}
 
+.ghead{grid-column:1/-1;margin:8px 0 0;font-family:var(--f-title);font-weight:400;font-size:22px;border-bottom:2px dashed var(--rule);padding-bottom:4px}
 /* Sentences */
 .slist{display:flex;flex-direction:column;gap:10px}
 .sent{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 12px;display:grid;grid-template-columns:96px 1fr;gap:4px 12px;align-items:center}
@@ -138,7 +139,7 @@ button svg{width:20px;height:20px;flex:none}
 /*__IMAGES__*/
 const IMG = window.IMG || {};
 
-// Worksheet items 1–20. q = how the blank looks on the test, ex = sentence to listen to.
+// Study items (9/nine removed, colours grouped). q = blank on the test, ex = sentence to listen to.
 const ITEMS = [
  {n:1, en:"belt",   ko:"벨트",   img:"belt",   q:"Is this your ___?", ex:"Is this your belt?",  exKo:"이것은 너의 벨트니?"},
  {n:2, en:"coat",   ko:"코트",   img:"coat",   q:"Is this your ___?", ex:"Is this your coat?",  exKo:"이것은 너의 코트니?"},
@@ -149,18 +150,20 @@ const ITEMS = [
  {n:7, en:"very",   ko:"매우",   img:"family", q:"He's ___ small.",   ex:"He's very small.",    exKo:"그는 매우 작다."},
  {n:8, en:"small",  ko:"작은",   img:"bear",   q:"He's very ___.",    ex:"The bear is small.",  exKo:"그 곰은 작다."},
  {n:9, en:"bag",    ko:"가방",   img:"amy",    q:"Is this your ___?", ex:"Is this your bag?",   exKo:"이것은 너의 가방이니?"},
- {n:10,en:"red",    ko:"빨간색", img:"amy",    q:"No. My bag is ___.",ex:"No. My bag is red.",  exKo:"아니. 내 가방은 빨간색이야.", hint:"힌트: Amy의 가방 색깔을 보세요!"},
+ {color:true, n:10,en:"red",    ko:"빨간색", img:"amy",    q:"No. My bag is ___.",ex:"No. My bag is red.",  exKo:"아니. 내 가방은 빨간색이야.", hint:"힌트: Amy의 가방 색깔을 보세요!"},
+ {color:true, n:12,en:"black",  ko:"검정색", img:"black",  ex:"My cap is black.",   exKo:"내 모자는 검정색이야."},
+ {color:true, n:15,en:"yellow", ko:"노란색", img:"yellow", ex:"It is yellow.",      exKo:"그것은 노란색이야."},
+ {color:true, n:16,en:"brown",  ko:"갈색",   img:"brown",  ex:"My bag is brown.",   exKo:"내 가방은 갈색이야."},
  {n:11,en:"it",     ko:"그것",   img:null,     pre:"Is this your cap?", q:"Yes, ___ is.", ex:"Is this your cap? Yes, it is.", exKo:"이것은 네 모자니? 응, 맞아."},
- {n:12,en:"black",  ko:"검정색", img:"black",  ex:"My cap is black.",   exKo:"내 모자는 검정색이야."},
  {n:13,en:"boy",    ko:"소년",   img:"boy",    ex:"He is a boy.",       exKo:"그는 소년이야."},
  {n:14,en:"That",   ko:"저것",   img:"that",   q:"___ is my cap.",      ex:"That is my cap.", exKo:"저것은 나의 모자야."},
- {n:15,en:"yellow", ko:"노란색", img:"yellow", ex:"It is yellow.",      exKo:"그것은 노란색이야."},
- {n:16,en:"brown",  ko:"갈색",   img:"brown",  ex:"My bag is brown.",   exKo:"내 가방은 갈색이야."},
  {n:17,en:"Mine",   ko:"내 것",  img:"mine",   q:"___ is red.",         ex:"Mine is red.",    exKo:"내 것은 빨간색이야."},
- {n:18,en:"nine",   ko:"구, 아홉", img:"nine", ex:"I am nine.",         exKo:"나는 아홉 살이야."},
  {n:19,en:"bike",   ko:"자전거", img:"bike",   ex:"Is this your bike?", exKo:"이것은 너의 자전거니?", hint:"힌트: 네 글자"},
  {n:20,en:"like",   ko:"좋아하다", img:"like", ex:"I like it.",          exKo:"나는 그것이 좋아."},
 ];
+ITEMS.forEach((it,i)=>it.n = i+1);   // number in study order
+const COLOR_START = ITEMS.find(it=>it.color), AFTER_COLOR = ITEMS.find((it,i)=>i>0 && !it.color && ITEMS[i-1].color);
+const groupHead = (it, tag) => it===COLOR_START ? `<${tag} class="ghead">색깔</${tag}>` : it===AFTER_COLOR ? `<${tag} class="ghead">다른 단어</${tag}>` : "";
 
 /* ---------- Speech ---------- */
 const synth = window.speechSynthesis;
@@ -196,6 +199,7 @@ const cards = ITEMS.map(it=>{
   const play = ()=>{ stopSpeech(); cards.forEach(x=>x.classList.remove("playing")); c.classList.add("playing"); say(it.en.toLowerCase(), 0.75, ()=>c.classList.remove("playing")); };
   c.addEventListener("click", play);
   c.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); play(); } });
+  grid.insertAdjacentHTML("beforeend", groupHead(it,"h2"));
   grid.appendChild(c);
   return c;
 });
@@ -228,6 +232,7 @@ ITEMS.forEach(it=>{
     stopSpeech(); document.querySelectorAll(".sent.playing").forEach(x=>x.classList.remove("playing"));
     d.classList.add("playing"); say(it.ex, +b.dataset.r, ()=>d.classList.remove("playing"));
   });
+  sentList.insertAdjacentHTML("beforeend", groupHead(it,"h2"));
   sentList.appendChild(d);
 });
 
@@ -235,11 +240,11 @@ ITEMS.forEach(it=>{
 const testList = document.getElementById("testList");
 const BLANK = '<span class="blank" aria-label="빈칸"></span>';
 ITEMS.forEach(it=>{
-  const ko = it.n===10 ? "아니. 내 가방은 (　　)이야." : it.n===11 ? "응, 맞아. (네, 그것은 나의 모자가 맞아요.)" : it.exKo;
+  const ko = it.en==="red" ? "아니. 내 가방은 (　　)이야." : it.en==="it" ? "응, 맞아. (네, 그것은 나의 모자가 맞아요.)" : it.exKo;
   const q = it.q
     ? `${it.pre?it.pre+"<br>":""}${it.q.replace("___", BLANK)}<div class="ko">${ko}</div>`
     : `${BLANK}<div class="ko">${it.ko}</div>`;
-  testList.insertAdjacentHTML("beforeend",
+  testList.insertAdjacentHTML("beforeend", groupHead(it,"h2") +
     `<div class="trow"><div class="n">${it.n}</div>${pic(it)}<div class="q">${q}${it.hint?`<div class="hint">${it.hint}</div>`:""}</div></div>`);
 });
 
