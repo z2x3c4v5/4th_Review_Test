@@ -30,7 +30,7 @@ header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:spac
 header.top h1{margin:0;font-family:var(--f-title);font-weight:400;font-size:clamp(26px,6vw,38px);line-height:1.1;text-wrap:balance}
 header.top h1 .en{font-family:var(--f-en);font-weight:700;color:var(--muted);font-size:.55em;display:block;letter-spacing:.02em}
 header.top p{margin:0;color:var(--muted);font-size:15px}
-nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);display:grid;grid-template-columns:1fr 1fr 1.5fr 1fr;gap:6px;padding-block:12px}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:6px;padding-block:12px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
 nav.tabs a{min-width:0;white-space:nowrap;text-align:center;text-decoration:none;color:var(--ink);font-family:var(--f-title);font-size:clamp(14px,4vw,17px);padding:8px 4px;border-radius:999px;border:2px solid var(--line);background:var(--card)}
 nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -46,12 +46,15 @@ button svg{width:20px;height:20px;flex:none}
 .small{font-size:15px;min-height:40px;padding:6px 12px}
 
 /* 4-line English guide */
-.lines{font-family:var(--f-en);line-height:1;padding:.18em .2em .12em;
+/* line positions (--l1..--l4) are measured from the font in alignLines():
+   l1 = top of b/d/l, l2 = top of x (dashed), l3 = baseline (red), l4 = bottom of g/p/y */
+.lines{font-family:var(--f-en);padding:0 .2em;line-height:var(--lh,1.5em);
+  --l1:.22em; --l2:.55em; --l3:1.05em; --l4:1.3em;
   background:
-   linear-gradient(var(--rule),var(--rule)) 0 0/100% 1px no-repeat,
-   linear-gradient(90deg,var(--rule) 50%,transparent 0) 0 33%/8px 1px repeat-x,
-   linear-gradient(var(--rule-pink),var(--rule-pink)) 0 74%/100% 1px no-repeat,
-   linear-gradient(var(--rule),var(--rule)) 0 100%/100% 1px no-repeat}
+   linear-gradient(var(--rule),var(--rule)) 0 var(--l1)/100% 1px no-repeat,
+   linear-gradient(90deg,var(--rule) 50%,transparent 0) 0 var(--l2)/8px 1px repeat-x,
+   linear-gradient(var(--rule-pink),var(--rule-pink)) 0 var(--l3)/100% 1px no-repeat,
+   linear-gradient(var(--rule),var(--rule)) 0 var(--l4)/100% 1px no-repeat}
 
 /* Word cards: tap anywhere to hear */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
@@ -63,7 +66,8 @@ button svg{width:20px;height:20px;flex:none}
 .pic{height:96px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:10px;overflow:hidden}
 .pic img{max-height:96px;max-width:100%;object-fit:contain}
 .pic .capq{font-family:var(--f-en);font-size:18px;color:#1d2a4a;font-weight:700}
-.wcard .word{font-size:32px;font-weight:700}
+.bl{display:inline-block;width:0;height:0;vertical-align:baseline}
+.wcard .word{font-size:34px;font-weight:700;white-space:nowrap}
 .wcard .ko{font-size:16px;color:var(--muted)}
 
 /* Sentences */
@@ -89,40 +93,22 @@ button svg{width:20px;height:20px;flex:none}
 .trow .q{font-family:var(--f-en);font-size:clamp(19px,4.6vw,24px);font-weight:700;min-width:0;line-height:1.7}
 .trow .ko{font-size:15px;color:var(--muted);font-family:var(--f-ko);font-weight:400;line-height:1.4}
 .trow .hint{color:var(--bad);font-size:14px;font-family:var(--f-ko);font-weight:400}
-.blank{font:inherit;font-family:var(--f-en);font-weight:700;color:var(--ink);width:6.2em;max-width:100%;text-align:center;padding:2px 4px;border:none;border-bottom:3px solid var(--rule-pink);background:var(--soft);border-radius:8px 8px 0 0}
-.blank:focus{outline:none;background:var(--card);border-bottom-color:var(--rule);box-shadow:0 0 0 3px var(--rule)}
-.trow.right{border-color:var(--good)}
-.trow.right .blank{border-bottom-color:var(--good);color:var(--good)}
-.trow.wrong{border-color:var(--bad)}
-.trow.wrong .blank{border-bottom-color:var(--bad);color:var(--bad);text-decoration:line-through}
-.mark{font-family:var(--f-title);font-size:15px;margin-left:6px}
-.right .mark{color:var(--good)}
-.wrong .mark{color:var(--bad)}
-.fix{font-family:var(--f-en);font-weight:700}
+.blank{display:inline-block;width:5.5em;max-width:100%;height:1.1em;vertical-align:-.15em;border-bottom:3px solid var(--rule-pink);margin:0 .15em}
 @media (max-width:420px){.trow{grid-template-columns:28px 64px 1fr;gap:6px 8px}.trow .pic{height:54px}.trow .pic img{max-height:54px}}
-.scorebar{position:sticky;bottom:0;background:var(--paper);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;border-top:2px solid var(--line)}
-.score{font-family:var(--f-title);font-size:26px;font-variant-numeric:tabular-nums}
 
-/* Answer key */
-.tablebox{overflow-x:auto}
-table{border-collapse:collapse;width:100%;background:var(--card);font-variant-numeric:tabular-nums}
-th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:middle}
-th{background:var(--soft);font-family:var(--f-title);font-weight:400}
-td.a{font-family:var(--f-en);font-weight:700;font-size:20px}
 .warn{background:var(--soft);border-left:4px solid var(--rule-pink);padding:10px 12px;border-radius:8px;font-size:15px}
 </style>
 
 <div class="wrap">
   <header class="top">
     <h1><span class="en">Lesson 7 · Is this your cap?</span>영어 공부방</h1>
-    <p>단어 듣기 → 문장 듣기 → 빈칸 채우기</p>
+    <p>단어 듣기 → 문장 듣기 → 공책에 쓰기</p>
   </header>
 
   <nav class="tabs" aria-label="메뉴">
     <a href="#words" data-tab="words">① 단어</a>
     <a href="#sentences" data-tab="sentences">② 문장</a>
     <a href="#test" data-tab="test">③ 빈칸 채우기</a>
-    <a href="#answers" data-tab="answers">정답표</a>
   </nav>
 
   <p id="ttsWarn" class="warn" hidden>이 기기에서는 영어 소리가 안 나올 수 있어요. 크롬이나 사파리 브라우저로 열어 보세요.</p>
@@ -142,19 +128,10 @@ td.a{font-family:var(--f-en);font-weight:700;font-size:20px}
   </section>
 
   <section data-view="test" hidden>
-    <p class="lead">빈칸을 누르고 정답을 적어 보세요. 다 적으면 아래 <b>채점하기</b>를 눌러요.</p>
+    <p class="lead" style="color:var(--ink)">공책에 번호를 쓰고, 빈칸에 들어갈 영어 단어를 적어 보세요.</p>
     <div class="tlist" id="testList"></div>
-    <div class="scorebar">
-      <span class="score" id="score" hidden></span>
-      <button class="primary" id="grade">채점하기</button>
-      <button id="resetTest">지우고 다시</button>
-    </div>
   </section>
 
-  <section data-view="answers" hidden>
-    <p class="lead">선생님용 정답표예요. 시험지 번호와 같아요.</p>
-    <div class="tablebox"><table><thead><tr><th>번호</th><th>문제</th><th>정답</th><th>뜻</th></tr></thead><tbody id="ansBody"></tbody></table></div>
-  </section>
 </div>
 
 <script>
@@ -254,49 +231,45 @@ ITEMS.forEach(it=>{
   sentList.appendChild(d);
 });
 
-/* ---------- ③ Fill in the blanks ---------- */
+/* ---------- ③ Blanks to copy into the notebook ---------- */
 const testList = document.getElementById("testList");
-const norm = s => s.toLowerCase().replace(/[\s.\-’'?!]/g,"");
-const inputs = ITEMS.map(it=>{
-  const r = document.createElement("div"); r.className = "trow";
-  const box = `<input class="blank" id="a${it.n}" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="${it.n}번 정답">`;
-  const q = it.q
-    ? `${it.pre?it.pre+"<br>":""}${it.q.replace("___", box)}<div class="ko">${it.n===11 ? "응, 맞아. (네, 그것은 나의 모자가 맞아요.)" : it.exKo}</div>`
-    : `${box}<div class="ko">${it.ko}</div>`;
-  r.innerHTML = `<div class="n">${it.n}</div>${pic(it)}<div class="q">${q}${it.hint?`<div class="hint">${it.hint}</div>`:""}<div class="res"></div></div>`;
-  testList.appendChild(r);
-  const inp = r.querySelector("input");
-  inp.addEventListener("input", ()=>{ r.classList.remove("right","wrong"); r.querySelector(".res").innerHTML=""; });
-  inp.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); const nx = document.getElementById("a"+(it.n+1)); nx ? nx.focus() : inp.blur(); } });
-  return {it, r, inp};
-});
-// Korean line under 10 must not give away the answer
-document.querySelector("#a10").closest(".q").querySelector(".ko").textContent = "아니. 내 가방은 (        )이야.";
-document.getElementById("grade").onclick = ()=>{
-  let right = 0;
-  inputs.forEach(({it,r,inp})=>{
-    const ok = norm(inp.value) === norm(it.en);
-    if(ok) right++;
-    r.classList.toggle("right", ok); r.classList.toggle("wrong", !ok);
-    r.querySelector(".res").innerHTML = ok ? `<span class="mark">O 맞았어요</span>`
-      : `<span class="mark">X</span> 정답: <span class="fix">${it.en}</span>`;
-  });
-  const s = document.getElementById("score"); s.hidden = false; s.textContent = `${right} / 20`;
-};
-document.getElementById("resetTest").onclick = ()=>{
-  inputs.forEach(({r,inp})=>{ inp.value=""; r.classList.remove("right","wrong"); r.querySelector(".res").innerHTML=""; });
-  document.getElementById("score").hidden = true; window.scrollTo({top:0});
-};
-
-/* ---------- Answer key ---------- */
-const ab = document.getElementById("ansBody");
+const BLANK = '<span class="blank" aria-label="빈칸"></span>';
 ITEMS.forEach(it=>{
-  const q = it.q ? (it.pre?it.pre+" ":"") + it.q.replace("___","(　　)") : "그림 보고 단어 쓰기";
-  ab.insertAdjacentHTML("beforeend", `<tr><td>${it.n}</td><td style="font-family:var(--f-en)">${q}</td><td class="a">${it.en}</td><td>${it.ko}</td></tr>`);
+  const ko = it.n===10 ? "아니. 내 가방은 (　　)이야." : it.n===11 ? "응, 맞아. (네, 그것은 나의 모자가 맞아요.)" : it.exKo;
+  const q = it.q
+    ? `${it.pre?it.pre+"<br>":""}${it.q.replace("___", BLANK)}<div class="ko">${ko}</div>`
+    : `${BLANK}<div class="ko">${it.ko}</div>`;
+  testList.insertAdjacentHTML("beforeend",
+    `<div class="trow"><div class="n">${it.n}</div>${pic(it)}<div class="q">${q}${it.hint?`<div class="hint">${it.hint}</div>`:""}</div></div>`);
 });
+
+/* ---------- 4-line guide alignment ---------- */
+const mctx = document.createElement("canvas").getContext("2d");
+function alignLines(){
+  document.querySelectorAll(".lines").forEach(el=>{
+    const cs = getComputedStyle(el), F = parseFloat(cs.fontSize);
+    mctx.font = `${cs.fontWeight} ${F}px ${cs.fontFamily}`;
+    const asc = mctx.measureText("bdhklt").actualBoundingBoxAscent;   // tall letters
+    const xh  = mctx.measureText("xzvwu").actualBoundingBoxAscent;    // small letters
+    const des = mctx.measureText("gpqy").actualBoundingBoxDescent;    // tails
+    const gap = (asc - xh) * 0.6;                                    // room above/below the guide
+    const L = Math.ceil(asc + des + gap*2);
+    el.style.setProperty("--lh", L+"px");
+    // read the real baseline from the rendered line: a 0-size inline-block sits on it
+    let probe = el.querySelector(".bl");
+    if(!probe){ probe = document.createElement("i"); probe.className = "bl"; el.appendChild(probe); }
+    const base = probe.getBoundingClientRect().top - el.getBoundingClientRect().top - el.clientTop;
+    el.style.setProperty("--l1", Math.round(base-asc)+"px");
+    el.style.setProperty("--l2", Math.round(base-xh)+"px");
+    el.style.setProperty("--l3", Math.round(base)+"px");
+    el.style.setProperty("--l4", Math.round(base+des)+"px");
+  });
+}
+alignLines();
+if(document.fonts){ document.fonts.ready.then(alignLines); document.fonts.addEventListener?.("loadingdone", alignLines); }
 
 /* ---------- Tabs ---------- */
-const VIEWS = ["words","sentences","test","answers"];
+const VIEWS = ["words","sentences","test"];
 function route(){
   const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "words";
   document.querySelectorAll("section[data-view]").forEach(s=>s.hidden = s.dataset.view!==v);
