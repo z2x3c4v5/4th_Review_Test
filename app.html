@@ -3,8 +3,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Jua&family=Gowun+Dodum&display=swap">
 <style>
-/* Layout: an exercise-notebook page. Ruled header band, tab strip, then one column of
-   cards on English 4-line guides (blue/pink like the worksheet). Dark = chalkboard. */
+/* Layout: an exercise-notebook page. Ruled header band, tab strip, then cards on
+   English 4-line guides (blue/pink like the worksheet). Dark = chalkboard. */
 :root{
   --paper:#fbfcff; --card:#ffffff; --ink:#1d2a4a; --muted:#5d6888;
   --rule:#9cc3ec; --rule-pink:#f19ab6; --accent:#ffcf3f; --accent-ink:#2a2200;
@@ -30,11 +30,11 @@ header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:spac
 header.top h1{margin:0;font-family:var(--f-title);font-weight:400;font-size:clamp(26px,6vw,38px);line-height:1.1;text-wrap:balance}
 header.top h1 .en{font-family:var(--f-en);font-weight:700;color:var(--muted);font-size:.55em;display:block;letter-spacing:.02em}
 header.top p{margin:0;color:var(--muted);font-size:15px}
-nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);display:flex;gap:6px;padding-block:12px;flex-wrap:wrap}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);display:grid;grid-template-columns:1fr 1fr 1.5fr 1fr;gap:6px;padding-block:12px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
-nav.tabs a{flex:1 1 auto;text-align:center;text-decoration:none;color:var(--ink);font-family:var(--f-title);font-size:17px;padding:8px 10px;border-radius:999px;border:2px solid var(--line);background:var(--card)}
+nav.tabs a{min-width:0;white-space:nowrap;text-align:center;text-decoration:none;color:var(--ink);font-family:var(--f-title);font-size:clamp(14px,4vw,17px);padding:8px 4px;border-radius:999px;border:2px solid var(--line);background:var(--card)}
 nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-nav.tabs a:focus-visible,button:focus-visible{outline:3px solid var(--rule);outline-offset:2px}
+nav.tabs a:focus-visible,button:focus-visible,.wcard:focus-visible{outline:3px solid var(--rule);outline-offset:2px}
 section[data-view]{display:flex;flex-direction:column;gap:16px}
 .lead{margin:0;color:var(--muted)}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -42,67 +42,66 @@ section[data-view]{display:flex;flex-direction:column;gap:16px}
 button{font:inherit;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:8px 12px;display:inline-flex;align-items:center;gap:6px;min-height:44px}
 button:hover{border-color:var(--rule)}
 button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-family:var(--f-title);font-size:19px}
-button.ok{background:var(--good);border-color:var(--good);color:#fff;font-family:var(--f-title);font-size:19px}
-button.no{background:var(--bad);border-color:var(--bad);color:#fff;font-family:var(--f-title);font-size:19px}
 button svg{width:20px;height:20px;flex:none}
-.small{font-size:14px;min-height:38px;padding:6px 10px}
+.small{font-size:15px;min-height:40px;padding:6px 12px}
 
 /* 4-line English guide */
-.lines{position:relative;font-family:var(--f-en);line-height:1;padding:.18em .2em .12em;
+.lines{font-family:var(--f-en);line-height:1;padding:.18em .2em .12em;
   background:
    linear-gradient(var(--rule),var(--rule)) 0 0/100% 1px no-repeat,
    linear-gradient(90deg,var(--rule) 50%,transparent 0) 0 33%/8px 1px repeat-x,
    linear-gradient(var(--rule-pink),var(--rule-pink)) 0 74%/100% 1px no-repeat,
    linear-gradient(var(--rule),var(--rule)) 0 100%/100% 1px no-repeat}
 
-/* Word cards */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.wcard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.wcard .num{font-family:var(--f-en);color:var(--muted);font-size:14px}
-.wcard .pic{height:110px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:10px;overflow:hidden}
-.wcard .pic img{max-height:110px;object-fit:contain}
-.wcard .word{font-size:34px;font-weight:700;text-align:center;cursor:pointer}
-.wcard .ko{text-align:center;font-size:17px}
-.wcard .ex{font-family:var(--f-en);font-size:15px;color:var(--muted);text-align:center}
-.wcard .btns{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.spell{display:flex;justify-content:center;gap:4px;flex-wrap:wrap}
-.spell span{font-family:var(--f-en);font-weight:700;font-size:20px;min-width:26px;text-align:center;border-bottom:2px solid var(--rule-pink);padding:0 2px}
-.spell span.on{background:var(--accent);color:var(--accent-ink);border-radius:6px}
-.hideKo .wcard .ko,.hideEn .wcard .word{visibility:hidden}
+/* Word cards: tap anywhere to hear */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.wcard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0;cursor:pointer;text-align:center;position:relative}
+.wcard:hover{border-color:var(--rule)}
+.wcard.playing{border-color:var(--accent);background:var(--soft)}
+.wcard .num{position:absolute;top:6px;left:10px;font-family:var(--f-en);color:var(--muted);font-size:13px}
+.wcard .spk{position:absolute;top:8px;right:10px;color:var(--muted);width:18px;height:18px}
+.pic{height:96px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:10px;overflow:hidden}
+.pic img{max-height:96px;max-width:100%;object-fit:contain}
+.pic .capq{font-family:var(--f-en);font-size:18px;color:#1d2a4a;font-weight:700}
+.wcard .word{font-size:32px;font-weight:700}
+.wcard .ko{font-size:16px;color:var(--muted)}
 
 /* Sentences */
 .slist{display:flex;flex-direction:column;gap:10px}
-.sent{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
-.sent .en{font-family:var(--f-en);font-size:clamp(22px,5vw,28px);font-weight:700;display:flex;flex-wrap:wrap;gap:0 .3em}
-.sent .en span.on{background:var(--accent);color:var(--accent-ink);border-radius:6px}
-.sent .ko{color:var(--muted)}
-.hideSentKo .sent .ko{visibility:hidden}
+.sent{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 12px;display:grid;grid-template-columns:96px 1fr;gap:4px 12px;align-items:center}
+.sent .pic{height:72px;grid-row:span 3}
+.sent .pic img{max-height:72px}
+.sent .top{font-size:14px;color:var(--muted)}
+.sent .top b{font-family:var(--f-en);color:var(--ink);font-size:16px}
+.sent .en{font-family:var(--f-en);font-size:clamp(21px,5vw,27px);font-weight:700;min-width:0}
+.sent .en mark{background:var(--accent);color:var(--accent-ink);border-radius:6px;padding:0 .15em}
+.sent .ko{color:var(--muted);font-size:15px}
+.sent .row{grid-column:2}
+.sent.playing{border-color:var(--accent)}
+@media (max-width:420px){.sent{grid-template-columns:72px 1fr}.sent .pic{height:60px}.sent .pic img{max-height:60px}}
 
-/* Quiz */
-.setup{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
-.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
-.modes label{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--line);border-radius:12px;padding:10px;cursor:pointer;background:var(--paper)}
-.modes label:has(input:checked){border-color:var(--accent);background:var(--soft)}
-.modes b{font-family:var(--f-title);font-weight:400;font-size:18px;display:block}
-.modes small{color:var(--muted)}
-.qcard{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
-.qtop{width:100%;display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--muted)}
-.qno{font-family:var(--f-title);font-size:22px;color:var(--ink)}
-.bar{width:100%;height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
-.qpic{background:#fff;border-radius:12px;padding:6px;max-width:100%}
-.qpic img{max-height:180px;object-fit:contain}
-.qsent{font-family:var(--f-en);font-size:clamp(22px,5.5vw,30px);font-weight:700}
-.qsent .blank{display:inline-block;min-width:4.5em;border-bottom:3px solid var(--rule-pink);margin:0 .15em}
-.qko{font-size:20px}
-.qhint{color:var(--bad);font-size:15px}
-.notebook{background:var(--soft);border-radius:12px;padding:10px 14px;font-size:16px}
-.answer{font-size:clamp(40px,11vw,64px);font-weight:700;width:min(100%,420px)}
-.hintline{font-family:var(--f-en);font-size:30px;letter-spacing:.25em}
-.result{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
-.score{font-family:var(--f-title);font-size:48px;font-variant-numeric:tabular-nums}
-.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.chip{font-family:var(--f-en);border-radius:999px;padding:4px 12px;border:2px solid var(--bad);color:var(--bad);font-weight:700}
+/* Blank-filling test */
+.tlist{display:flex;flex-direction:column;gap:10px}
+.trow{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 12px;display:grid;grid-template-columns:34px 96px 1fr;gap:6px 12px;align-items:center}
+.trow .n{font-family:var(--f-title);font-size:22px;text-align:center}
+.trow .pic{height:72px}
+.trow .pic img{max-height:72px}
+.trow .q{font-family:var(--f-en);font-size:clamp(19px,4.6vw,24px);font-weight:700;min-width:0;line-height:1.7}
+.trow .ko{font-size:15px;color:var(--muted);font-family:var(--f-ko);font-weight:400;line-height:1.4}
+.trow .hint{color:var(--bad);font-size:14px;font-family:var(--f-ko);font-weight:400}
+.blank{font:inherit;font-family:var(--f-en);font-weight:700;color:var(--ink);width:6.2em;max-width:100%;text-align:center;padding:2px 4px;border:none;border-bottom:3px solid var(--rule-pink);background:var(--soft);border-radius:8px 8px 0 0}
+.blank:focus{outline:none;background:var(--card);border-bottom-color:var(--rule);box-shadow:0 0 0 3px var(--rule)}
+.trow.right{border-color:var(--good)}
+.trow.right .blank{border-bottom-color:var(--good);color:var(--good)}
+.trow.wrong{border-color:var(--bad)}
+.trow.wrong .blank{border-bottom-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.mark{font-family:var(--f-title);font-size:15px;margin-left:6px}
+.right .mark{color:var(--good)}
+.wrong .mark{color:var(--bad)}
+.fix{font-family:var(--f-en);font-weight:700}
+@media (max-width:420px){.trow{grid-template-columns:28px 64px 1fr;gap:6px 8px}.trow .pic{height:54px}.trow .pic img{max-height:54px}}
+.scorebar{position:sticky;bottom:0;background:var(--paper);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;border-top:2px solid var(--line)}
+.score{font-family:var(--f-title);font-size:26px;font-variant-numeric:tabular-nums}
 
 /* Answer key */
 .tablebox{overflow-x:auto}
@@ -110,70 +109,51 @@ table{border-collapse:collapse;width:100%;background:var(--card);font-variant-nu
 th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:middle}
 th{background:var(--soft);font-family:var(--f-title);font-weight:400}
 td.a{font-family:var(--f-en);font-weight:700;font-size:20px}
-.note{font-size:14px;color:var(--muted)}
 .warn{background:var(--soft);border-left:4px solid var(--rule-pink);padding:10px 12px;border-radius:8px;font-size:15px}
-@media (prefers-reduced-motion: reduce){.bar i{transition:none}}
 </style>
 
 <div class="wrap">
   <header class="top">
     <h1><span class="en">Lesson 7 · Is this your cap?</span>영어 공부방</h1>
-    <p>소리 듣기 → 따라 말하기 → 공책에 쓰기</p>
+    <p>단어 듣기 → 문장 듣기 → 빈칸 채우기</p>
   </header>
 
   <nav class="tabs" aria-label="메뉴">
-    <a href="#words" data-tab="words">① 단어 공부</a>
-    <a href="#sentences" data-tab="sentences">② 문장 듣기</a>
-    <a href="#quiz" data-tab="quiz">③ 공책 문제</a>
+    <a href="#words" data-tab="words">① 단어</a>
+    <a href="#sentences" data-tab="sentences">② 문장</a>
+    <a href="#test" data-tab="test">③ 빈칸 채우기</a>
     <a href="#answers" data-tab="answers">정답표</a>
   </nav>
 
   <p id="ttsWarn" class="warn" hidden>이 기기에서는 영어 소리가 안 나올 수 있어요. 크롬이나 사파리 브라우저로 열어 보세요.</p>
 
-  <!-- WORDS -->
   <section data-view="words">
-    <p class="lead">그림을 보고, 단어를 누르면 소리가 나와요. <b>천천히</b>로 듣고 <b>철자</b>로 한 글자씩 익혀 보세요.</p>
+    <p class="lead">단어를 누르면 소리가 나와요. 듣고 따라 말해 보세요.</p>
     <div class="row">
       <button class="primary" id="playAll"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>전체 듣기</button>
       <button id="stopAll">멈추기</button>
-      <button id="toggleKo" aria-pressed="false">한글 가리기</button>
-      <button id="toggleEn" aria-pressed="false">영어 가리기</button>
     </div>
     <div class="grid" id="wordGrid"></div>
   </section>
 
-  <!-- SENTENCES -->
   <section data-view="sentences" hidden>
-    <p class="lead">문장을 듣고 소리 내어 따라 말해 보세요. <b>한 단어씩</b>을 누르면 단어마다 노랗게 표시돼요.</p>
-    <div class="row"><button id="toggleSentKo" aria-pressed="false">한글 뜻 가리기</button></div>
+    <p class="lead">각 단어가 들어간 문장이에요. <b>듣기</b>를 누르고 따라 말해 보세요.</p>
     <div class="slist" id="sentList"></div>
   </section>
 
-  <!-- QUIZ -->
-  <section data-view="quiz" hidden>
-    <div id="quizSetup" class="setup">
-      <p class="lead" style="color:var(--ink)">문제가 하나씩 나와요. <b>공책에 번호와 답을 쓴 다음</b> "정답 보기"를 누르고, 맞았는지 스스로 체크해요.</p>
-      <div class="modes" role="radiogroup" aria-label="문제 종류">
-        <label><input type="radio" name="mode" id="m-sheet" value="sheet" checked><span><b>시험지 그대로</b><small>오늘 시험과 같은 1~20번 순서</small></span></label>
-        <label><input type="radio" name="mode" id="m-listen" value="listen"><span><b>듣고 쓰기</b><small>소리만 듣고 단어 받아쓰기</small></span></label>
-        <label><input type="radio" name="mode" id="m-pic" value="pic"><span><b>그림 보고 쓰기</b><small>그림만 보고 영어로 쓰기</small></span></label>
-        <label><input type="radio" name="mode" id="m-ko" value="ko"><span><b>한글 보고 쓰기</b><small>우리말 뜻을 보고 영어로 쓰기</small></span></label>
-      </div>
-      <div class="row">
-        <label class="row" style="gap:6px"><input type="checkbox" id="shuffle"> 순서 섞기</label>
-      </div>
-      <div class="row"><button class="primary" id="startQuiz">문제 시작</button></div>
+  <section data-view="test" hidden>
+    <p class="lead">빈칸을 누르고 정답을 적어 보세요. 다 적으면 아래 <b>채점하기</b>를 눌러요.</p>
+    <div class="tlist" id="testList"></div>
+    <div class="scorebar">
+      <span class="score" id="score" hidden></span>
+      <button class="primary" id="grade">채점하기</button>
+      <button id="resetTest">지우고 다시</button>
     </div>
-
-    <div id="quizBox" class="qcard" hidden aria-live="polite"></div>
-    <div id="quizResult" class="result" hidden></div>
   </section>
 
-  <!-- ANSWERS -->
   <section data-view="answers" hidden>
     <p class="lead">선생님용 정답표예요. 시험지 번호와 같아요.</p>
-    <div class="tablebox"><table id="ansTable"><thead><tr><th>번호</th><th>문제</th><th>정답</th><th>뜻</th></tr></thead><tbody></tbody></table></div>
-    <p class="note">9번·10번 칸은 시험지에서 그림과 문장이 나뉘어 있어서 9번은 "bag(가방)", 10번은 "pink(분홍색, Amy의 가방 색)"으로 넣었어요.</p>
+    <div class="tablebox"><table><thead><tr><th>번호</th><th>문제</th><th>정답</th><th>뜻</th></tr></thead><tbody id="ansBody"></tbody></table></div>
   </section>
 </div>
 
@@ -181,43 +161,28 @@ td.a{font-family:var(--f-en);font-weight:700;font-size:20px}
 /*__IMAGES__*/
 const IMG = window.IMG || {};
 
-// Worksheet items 1–20 (Lesson 7 Writing Words and Sentences)
+// Worksheet items 1–20. q = how the blank looks on the test, ex = sentence to listen to.
 const ITEMS = [
- {n:1, en:"belt",   ko:"벨트",   img:"belt",   sent:"Is this your ___?", sentKo:"이것은 너의 벨트니?"},
- {n:2, en:"coat",   ko:"코트",   img:"coat",   sent:"Is this your ___?", sentKo:"이것은 너의 코트니?"},
- {n:3, en:"dress",  ko:"원피스", img:"dress",  sent:"Is this your ___?", sentKo:"이것은 너의 원피스니?"},
- {n:4, en:"jacket", ko:"재킷",   img:"jacket", sent:"Is this your ___?", sentKo:"이것은 너의 재킷이니?"},
- {n:5, en:"skirt",  ko:"치마",   img:"skirt",  sent:"Is this your ___?", sentKo:"이것은 너의 치마니?"},
- {n:6, en:"T-shirt",ko:"티셔츠", img:"tshirt", sent:"Is this your ___?", sentKo:"이것은 너의 티셔츠니?", spell:"T. s. h. i. r. t."},
- {n:7, en:"very",   ko:"매우",   img:"family", sent:"He's ___ small.",  sentKo:"그는 매우 작다."},
- {n:8, en:"small",  ko:"작은",   img:"bear",   sent:"He's very ___.",   sentKo:"그는 매우 작다."},
- {n:9, en:"bag",    ko:"가방",   img:"amy",    sent:"Is this your ___?", sentKo:"이것은 너의 가방이니?"},
- {n:10,en:"pink",   ko:"분홍색", img:"amy",    sent:"No. My bag is ___.", sentKo:"아니. 내 가방은 분홍색이야.", hint:"힌트: Amy의 가방 색깔을 보세요!"},
- {n:11,en:"it",     ko:"그것",   img:null,     pre:"Is this your cap?", sent:"Yes, ___ is.", sentKo:"응, 맞아. (네, 그것은 나의 모자가 맞아요.)"},
- {n:12,en:"black",  ko:"검정색", img:"black",  ex:"My cap is black."},
- {n:13,en:"boy",    ko:"소년",   img:"boy",    ex:"He is a boy."},
- {n:14,en:"That",   ko:"저것",   img:"that",   sent:"___ is my cap.", sentKo:"저것은 나의 모자야.", say:"that"},
- {n:15,en:"yellow", ko:"노란색", img:"yellow", ex:"It is yellow."},
- {n:16,en:"brown",  ko:"갈색",   img:"brown",  ex:"My bag is brown."},
- {n:17,en:"Mine",   ko:"내 것",  img:"mine",   sent:"___ is red.", sentKo:"내 것은 빨간색이야.", say:"mine"},
- {n:18,en:"nine",   ko:"구, 아홉", img:"nine", ex:"I am nine."},
- {n:19,en:"bike",   ko:"자전거", img:"bike",   ex:"Is this your bike?", hint:"힌트: 네 글자"},
- {n:20,en:"like",   ko:"좋아하다", img:"like", ex:"I like it."},
-];
-ITEMS.forEach(it=>{ if(it.sent) it.full = it.sent.replace("___", it.en); });
-
-const SENTENCES = [
- ["Is this your cap?","이것은 너의 모자니?"],
- ["Yes, it is.","응, 맞아."],
- ["No, it isn't.","아니, 그렇지 않아."],
- ["Is this your bag?","이것은 너의 가방이니?"],
- ["No. My bag is pink.","아니. 내 가방은 분홍색이야."],
- ["That is my cap.","저것은 나의 모자야."],
- ["Mine is red.","내 것은 빨간색이야."],
- ["He's very small.","그는 매우 작다."],
- ["Is this your T-shirt?","이것은 너의 티셔츠니?"],
- ["My cap is black.","내 모자는 검정색이야."],
- ["I like it.","나는 그것이 좋아."],
+ {n:1, en:"belt",   ko:"벨트",   img:"belt",   q:"Is this your ___?", ex:"Is this your belt?",  exKo:"이것은 너의 벨트니?"},
+ {n:2, en:"coat",   ko:"코트",   img:"coat",   q:"Is this your ___?", ex:"Is this your coat?",  exKo:"이것은 너의 코트니?"},
+ {n:3, en:"dress",  ko:"원피스", img:"dress",  q:"Is this your ___?", ex:"Is this your dress?", exKo:"이것은 너의 원피스니?"},
+ {n:4, en:"jacket", ko:"재킷",   img:"jacket", q:"Is this your ___?", ex:"Is this your jacket?",exKo:"이것은 너의 재킷이니?"},
+ {n:5, en:"skirt",  ko:"치마",   img:"skirt",  q:"Is this your ___?", ex:"Is this your skirt?", exKo:"이것은 너의 치마니?"},
+ {n:6, en:"T-shirt",ko:"티셔츠", img:"tshirt", q:"Is this your ___?", ex:"Is this your T-shirt?",exKo:"이것은 너의 티셔츠니?"},
+ {n:7, en:"very",   ko:"매우",   img:"family", q:"He's ___ small.",   ex:"He's very small.",    exKo:"그는 매우 작다."},
+ {n:8, en:"small",  ko:"작은",   img:"bear",   q:"He's very ___.",    ex:"The bear is small.",  exKo:"그 곰은 작다."},
+ {n:9, en:"bag",    ko:"가방",   img:"amy",    q:"Is this your ___?", ex:"Is this your bag?",   exKo:"이것은 너의 가방이니?"},
+ {n:10,en:"red",    ko:"빨간색", img:"amy",    q:"No. My bag is ___.",ex:"No. My bag is red.",  exKo:"아니. 내 가방은 빨간색이야.", hint:"힌트: Amy의 가방 색깔을 보세요!"},
+ {n:11,en:"it",     ko:"그것",   img:null,     pre:"Is this your cap?", q:"Yes, ___ is.", ex:"Is this your cap? Yes, it is.", exKo:"이것은 네 모자니? 응, 맞아."},
+ {n:12,en:"black",  ko:"검정색", img:"black",  ex:"My cap is black.",   exKo:"내 모자는 검정색이야."},
+ {n:13,en:"boy",    ko:"소년",   img:"boy",    ex:"He is a boy.",       exKo:"그는 소년이야."},
+ {n:14,en:"That",   ko:"저것",   img:"that",   q:"___ is my cap.",      ex:"That is my cap.", exKo:"저것은 나의 모자야."},
+ {n:15,en:"yellow", ko:"노란색", img:"yellow", ex:"It is yellow.",      exKo:"그것은 노란색이야."},
+ {n:16,en:"brown",  ko:"갈색",   img:"brown",  ex:"My bag is brown.",   exKo:"내 가방은 갈색이야."},
+ {n:17,en:"Mine",   ko:"내 것",  img:"mine",   q:"___ is red.",         ex:"Mine is red.",    exKo:"내 것은 빨간색이야."},
+ {n:18,en:"nine",   ko:"구, 아홉", img:"nine", ex:"I am nine.",         exKo:"나는 아홉 살이야."},
+ {n:19,en:"bike",   ko:"자전거", img:"bike",   ex:"Is this your bike?", exKo:"이것은 너의 자전거니?", hint:"힌트: 네 글자"},
+ {n:20,en:"like",   ko:"좋아하다", img:"like", ex:"I like it.",          exKo:"나는 그것이 좋아."},
 ];
 
 /* ---------- Speech ---------- */
@@ -232,214 +197,106 @@ function pickVoice(){
 if(synth){ pickVoice(); synth.onvoiceschanged = pickVoice; }
 else document.getElementById("ttsWarn").hidden = false;
 
-function speak(text, rate=0.85, onend){
+let token = 0;
+function stopSpeech(){ token++; if(synth) synth.cancel(); }
+function say(text, rate=0.8, onend){
   if(!synth){ onend && onend(); return; }
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "en-US"; if(voice) u.voice = voice; u.rate = rate;
   if(onend) u.onend = onend;
   synth.speak(u);
-  return u;
 }
-function stopSpeech(){ if(synth) synth.cancel(); queueToken++; }
-let queueToken = 0;
-function speakSeq(steps){ // steps: [{text,rate,before(),after()}], with small pauses
-  stopSpeech(); const my = ++queueToken; let i=0;
-  const next = ()=>{
-    if(my!==queueToken || i>=steps.length) return;
-    const s = steps[i++]; s.before && s.before();
-    speak(s.text, s.rate||0.85, ()=>{ s.after && s.after(); setTimeout(next, s.pause ?? 350); });
-  };
-  next();
-}
-const sayOf = it => it.say || it.en;
-const spellOf = it => it.spell || it.en.split("").join(". ") + ".";
-
-/* ---------- Icons ---------- */
 const ICON_SPK = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+const pic = it => `<div class="pic">${it.img && IMG[it.img] ? `<img src="${IMG[it.img]}" alt="${it.ko}">` : `<span class="capq">cap?</span>`}</div>`;
 
-/* ---------- Words view ---------- */
-function picHTML(key, alt, cls="pic"){
-  return key && IMG[key] ? `<div class="${cls}"><img src="${IMG[key]}" alt="${alt}"></div>` : "";
-}
+/* ---------- ① Words: tap to hear the word ---------- */
 const grid = document.getElementById("wordGrid");
-ITEMS.forEach(it=>{
-  const c = document.createElement("article"); c.className="wcard";
-  const ex = it.full || it.ex || "";
-  c.innerHTML = `<div class="num">${it.n}번</div>
-    ${picHTML(it.img, it.ko) || `<div class="pic"><span class="lines" style="font-size:22px;color:#1d2a4a">Is this your cap?</span></div>`}
-    <div class="word lines" role="button" tabindex="0">${it.en}</div>
-    <div class="ko">${it.ko}</div>
-    <div class="spell">${it.en.split("").map(ch=>`<span>${ch}</span>`).join("")}</div>
-    ${ex?`<div class="ex">${ex}</div>`:""}
-    <div class="btns">
-      <button class="small" data-a="say">${ICON_SPK}듣기</button>
-      <button class="small" data-a="slow">천천히</button>
-      <button class="small" data-a="spell">철자</button>
-      ${ex?`<button class="small" data-a="ex">문장</button>`:""}
-    </div>`;
-  const letters = [...c.querySelectorAll(".spell span")];
-  const doSpell = ()=>{
-    const chars = it.en.replace("-","").split("");
-    let idx = 0; const spans = letters.filter(s=>s.textContent!=="-");
-    speakSeq([
-      ...chars.map((ch,k)=>({text:ch.toLowerCase()===ch?ch:ch, rate:0.7, pause:150,
-         before:()=>{letters.forEach(s=>s.classList.remove("on")); spans[k].classList.add("on");}})),
-      {text:sayOf(it), rate:0.8, before:()=>letters.forEach(s=>s.classList.remove("on"))}
-    ]);
-  };
-  c.addEventListener("click", e=>{
-    const a = e.target.closest("[data-a]")?.dataset.a;
-    if(a==="say") { stopSpeech(); speak(sayOf(it)); }
-    if(a==="slow"){ stopSpeech(); speak(sayOf(it),0.45); }
-    if(a==="spell") doSpell();
-    if(a==="ex") { stopSpeech(); speak(ex,0.8); }
-  });
-  const w = c.querySelector(".word");
-  w.addEventListener("click", ()=>{ stopSpeech(); speak(sayOf(it)); });
-  w.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault(); stopSpeech(); speak(sayOf(it));} });
+const cards = ITEMS.map(it=>{
+  const c = document.createElement("div");
+  c.className = "wcard"; c.tabIndex = 0; c.setAttribute("role","button"); c.setAttribute("aria-label", it.en+" 듣기");
+  c.innerHTML = `<span class="num">${it.n}</span><svg class="spk" viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9H4z"/></svg>
+    ${pic(it)}<div class="word lines">${it.en}</div><div class="ko">${it.ko}</div>`;
+  const play = ()=>{ stopSpeech(); cards.forEach(x=>x.classList.remove("playing")); c.classList.add("playing"); say(it.en.toLowerCase(), 0.75, ()=>c.classList.remove("playing")); };
+  c.addEventListener("click", play);
+  c.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); play(); } });
   grid.appendChild(c);
+  return c;
 });
 document.getElementById("playAll").onclick = ()=>{
-  const cards = [...grid.children];
-  const steps = [];
-  ITEMS.forEach((it,i)=>{
-    steps.push({text:sayOf(it), rate:0.8, pause:700,
-      before:()=>{cards.forEach(c=>c.style.borderColor=""); cards[i].style.borderColor="var(--accent)"; cards[i].scrollIntoView({block:"nearest",behavior:"smooth"});}});
-    steps.push({text:sayOf(it), rate:0.6, pause:1300, after: i===ITEMS.length-1 ? ()=>cards[i].style.borderColor="" : null});
-  });
-  speakSeq(steps);
+  stopSpeech(); const my = token; let i = 0;
+  const next = ()=>{
+    cards.forEach(x=>x.classList.remove("playing"));
+    if(my!==token || i>=ITEMS.length) return;
+    const c = cards[i]; c.classList.add("playing"); c.scrollIntoView({block:"nearest",behavior:"smooth"});
+    const w = ITEMS[i++].en.toLowerCase();
+    say(w, 0.75, ()=>setTimeout(()=>{ if(my===token) say(w, 0.75, ()=>setTimeout(next, 1200)); }, 900));
+  };
+  next();
 };
-document.getElementById("stopAll").onclick = ()=>{ stopSpeech(); [...grid.children].forEach(c=>c.style.borderColor=""); };
-function toggler(id, cls, target){
-  const b = document.getElementById(id);
-  b.onclick = ()=>{ const on = target.classList.toggle(cls); b.setAttribute("aria-pressed", on); b.textContent = b.textContent.replace(on?"가리기":"보이기", on?"보이기":"가리기"); };
-}
-toggler("toggleKo","hideKo",grid.parentElement);
-toggler("toggleEn","hideEn",grid.parentElement);
+document.getElementById("stopAll").onclick = ()=>{ stopSpeech(); cards.forEach(x=>x.classList.remove("playing")); };
 
-/* ---------- Sentences view ---------- */
+/* ---------- ② Sentences using each word ---------- */
 const sentList = document.getElementById("sentList");
-SENTENCES.forEach(([en,ko])=>{
-  const d = document.createElement("article"); d.className="sent";
-  const words = en.split(" ");
-  d.innerHTML = `<div class="en">${words.map(w=>`<span>${w}</span>`).join("")}</div><div class="ko">${ko}</div>
-   <div class="row"><button class="small" data-a="say">${ICON_SPK}듣기</button><button class="small" data-a="slow">천천히</button><button class="small" data-a="word">한 단어씩</button><button class="small" data-a="rep">3번 반복</button></div>`;
-  const spans = [...d.querySelectorAll(".en span")];
-  const clear = ()=>spans.forEach(s=>s.classList.remove("on"));
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+ITEMS.forEach(it=>{
+  const d = document.createElement("article"); d.className = "sent";
+  const marked = it.ex.replace(new RegExp("\\b"+esc(it.en)+"\\b"), m=>`<mark>${m}</mark>`);
+  d.innerHTML = `${pic(it)}
+    <div class="top">${it.n}. <b>${it.en}</b> (${it.ko})</div>
+    <div class="en">${marked}</div>
+    <div class="ko">${it.exKo}</div>
+    <div class="row"><button class="small" data-r="0.8">${ICON_SPK}듣기</button><button class="small" data-r="0.5">천천히</button></div>`;
   d.addEventListener("click", e=>{
-    const a = e.target.closest("[data-a]")?.dataset.a; if(!a) return;
-    if(a==="say") speakSeq([{text:en,rate:0.85}]);
-    if(a==="slow") speakSeq([{text:en,rate:0.5}]);
-    if(a==="rep") speakSeq([{text:en,rate:0.75,pause:2200},{text:en,rate:0.75,pause:2200},{text:en,rate:0.75}]);
-    if(a==="word") speakSeq([...words.map((w,k)=>({text:w.replace(/[.?,]/g,""),rate:0.65,pause:250,before:()=>{clear();spans[k].classList.add("on");}})),
-                             {text:en,rate:0.8,before:clear}]);
+    const b = e.target.closest("[data-r]"); if(!b) return;
+    stopSpeech(); document.querySelectorAll(".sent.playing").forEach(x=>x.classList.remove("playing"));
+    d.classList.add("playing"); say(it.ex, +b.dataset.r, ()=>d.classList.remove("playing"));
   });
   sentList.appendChild(d);
 });
-toggler("toggleSentKo","hideSentKo",sentList.parentElement);
 
-/* ---------- Quiz ---------- */
-const qSetup = document.getElementById("quizSetup"), qBox = document.getElementById("quizBox"), qRes = document.getElementById("quizResult");
-let Q = {list:[], i:0, right:0, wrong:[], mode:"sheet", shown:false, hintLvl:0};
-
-function startQuiz(list){
-  Q = {list, i:0, right:0, wrong:[], mode:document.querySelector('input[name="mode"]:checked').value, shown:false, hintLvl:0};
-  qSetup.hidden = true; qRes.hidden = true; qBox.hidden = false; renderQ();
-}
-document.getElementById("startQuiz").onclick = ()=>{
-  let list = ITEMS.slice();
-  if(document.getElementById("shuffle").checked) list.sort(()=>Math.random()-.5);
-  startQuiz(list);
-};
-function blankSent(it){ return it.sent.replace("___", '<span class="blank">&nbsp;</span>'); }
-function hintText(it){
-  const lvl = Q.hintLvl;
-  return it.en.split("").map((ch,k)=> ch==="-" ? "-" : (k<lvl ? ch : "_")).join("");
-}
-function renderQ(){
-  const it = Q.list[Q.i], k = Q.i+1, total = Q.list.length, m = Q.mode;
-  let body = "";
-  if(m==="sheet"){
-    body += picHTML(it.img, "문제 그림", "qpic");
-    if(it.pre) body += `<div class="qsent">${it.pre}</div>`;
-    body += it.sent ? `<div class="qsent">${blankSent(it)}</div><div class="qko">${it.sentKo}</div>`
-                    : `<div class="qko">그림을 보고 영어 단어를 쓰세요: <b>${it.ko}</b></div>`;
-    if(it.hint) body += `<div class="qhint">${it.hint}</div>`;
-  } else if(m==="listen"){
-    body += `<div class="qko">잘 듣고 들리는 영어 단어를 쓰세요.</div>
-      <div class="row" style="justify-content:center"><button class="primary" data-a="hear">${ICON_SPK}다시 듣기</button><button data-a="hearSlow">천천히 듣기</button></div>`;
-  } else if(m==="pic"){
-    body += picHTML(it.img, "문제 그림", "qpic") || `<div class="qsent">Is this your cap?<br>${blankSent(it)}</div>`;
-    if(it.img && it.sent) body += `<div class="qsent">${blankSent(it)}</div>`;
-    body += `<div class="qko">그림을 보고 알맞은 영어 단어를 쓰세요.</div>`;
-  } else {
-    body += `<div class="qko" style="font-size:34px;font-family:var(--f-title)">${it.ko}</div><div class="qko">이 뜻의 영어 단어를 쓰세요.</div>`;
-  }
-  qBox.innerHTML = `
-    <div class="qtop"><span class="qno">${it.n}번 문제</span><span>${k} / ${total}</span></div>
-    <div class="bar"><i style="width:${(k-1)/total*100}%"></i></div>
-    <div class="notebook">공책에 <b>${it.n}.</b> 이라고 쓰고 답을 적어 보세요.</div>
-    ${body}
-    <div class="hintline" id="hintLine" ${Q.hintLvl?"":"hidden"}>${hintText(it)}</div>
-    <div id="ansArea" hidden></div>
-    <div class="row" id="qBtns" style="justify-content:center">
-      <button data-a="hint">힌트 (첫 글자)</button>
-      <button class="primary" data-a="show">정답 보기</button>
-    </div>
-    <div class="row" style="justify-content:center"><button class="small" data-a="quit">처음으로</button></div>`;
-  if(m==="listen") setTimeout(()=>speak(sayOf(it),0.75),250);
-}
-function showAnswer(){
-  const it = Q.list[Q.i]; Q.shown = true;
-  const a = document.getElementById("ansArea"); a.hidden = false;
-  a.innerHTML = `<div class="answer lines">${it.en}</div>
-    <div class="qko" style="margin-top:8px">${it.ko}${it.full?` · <span style="font-family:var(--f-en)">${it.full}</span>`:""}</div>
-    <div class="row" style="justify-content:center;margin-top:8px"><button class="small" data-a="hear">${ICON_SPK}듣기</button><button class="small" data-a="spellQ">철자 듣기</button></div>`;
-  document.getElementById("qBtns").innerHTML = `<button class="ok" data-a="right">맞았어요 O</button><button class="no" data-a="wrong">틀렸어요 X</button>`;
-  speak(sayOf(it),0.8);
-}
-function nextQ(ok){
-  const it = Q.list[Q.i];
-  if(ok) Q.right++; else Q.wrong.push(it);
-  Q.i++; Q.shown=false; Q.hintLvl=0; stopSpeech();
-  if(Q.i < Q.list.length) renderQ(); else showResult();
-}
-function showResult(){
-  qBox.hidden = true; qRes.hidden = false;
-  const t = Q.list.length, r = Q.right;
-  const msg = r===t ? "모두 맞았어요! 시험 준비 끝!" : r >= t*0.7 ? "잘했어요! 틀린 것만 한 번 더 해 봐요." : "괜찮아요. 틀린 단어를 공책에 3번씩 써 보고 다시 도전해요.";
-  qRes.innerHTML = `<div class="score">${r} / ${t}</div><p style="margin:0;font-size:19px">${msg}</p>
-   ${Q.wrong.length?`<div class="note">다시 볼 단어</div><div class="chips">${Q.wrong.map(w=>`<span class="chip">${w.n}. ${w.en}</span>`).join("")}</div>`:""}
-   <div class="row" style="justify-content:center">
-     ${Q.wrong.length?`<button class="primary" id="retryWrong">틀린 것만 다시</button>`:""}
-     <button id="retryAll">처음부터 다시</button>
-   </div>`;
-  const w = Q.wrong.slice();
-  const rw = document.getElementById("retryWrong"); if(rw) rw.onclick = ()=>startQuiz(w);
-  document.getElementById("retryAll").onclick = ()=>{ qRes.hidden=true; qSetup.hidden=false; };
-}
-qBox.addEventListener("click", e=>{
-  const a = e.target.closest("[data-a]")?.dataset.a; if(!a) return;
-  const it = Q.list[Q.i];
-  if(a==="hear"){ stopSpeech(); speak(sayOf(it),0.75); }
-  if(a==="hearSlow"){ stopSpeech(); speak(sayOf(it),0.45); }
-  if(a==="spellQ") speakSeq([...it.en.replace("-","").split("").map(ch=>({text:ch,rate:0.7,pause:150})),{text:sayOf(it),rate:0.8}]);
-  if(a==="hint"){ Q.hintLvl = Math.min(Q.hintLvl+1, it.en.length); const h=document.getElementById("hintLine"); h.hidden=false; h.textContent=hintText(it); e.target.closest("button").textContent="힌트 (한 글자 더)"; }
-  if(a==="show") showAnswer();
-  if(a==="right") nextQ(true);
-  if(a==="wrong") nextQ(false);
-  if(a==="quit"){ stopSpeech(); qBox.hidden=true; qSetup.hidden=false; }
+/* ---------- ③ Fill in the blanks ---------- */
+const testList = document.getElementById("testList");
+const norm = s => s.toLowerCase().replace(/[\s.\-’'?!]/g,"");
+const inputs = ITEMS.map(it=>{
+  const r = document.createElement("div"); r.className = "trow";
+  const box = `<input class="blank" id="a${it.n}" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="${it.n}번 정답">`;
+  const q = it.q
+    ? `${it.pre?it.pre+"<br>":""}${it.q.replace("___", box)}<div class="ko">${it.n===11 ? "응, 맞아. (네, 그것은 나의 모자가 맞아요.)" : it.exKo}</div>`
+    : `${box}<div class="ko">${it.ko}</div>`;
+  r.innerHTML = `<div class="n">${it.n}</div>${pic(it)}<div class="q">${q}${it.hint?`<div class="hint">${it.hint}</div>`:""}<div class="res"></div></div>`;
+  testList.appendChild(r);
+  const inp = r.querySelector("input");
+  inp.addEventListener("input", ()=>{ r.classList.remove("right","wrong"); r.querySelector(".res").innerHTML=""; });
+  inp.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); const nx = document.getElementById("a"+(it.n+1)); nx ? nx.focus() : inp.blur(); } });
+  return {it, r, inp};
 });
+// Korean line under 10 must not give away the answer
+document.querySelector("#a10").closest(".q").querySelector(".ko").textContent = "아니. 내 가방은 (        )이야.";
+document.getElementById("grade").onclick = ()=>{
+  let right = 0;
+  inputs.forEach(({it,r,inp})=>{
+    const ok = norm(inp.value) === norm(it.en);
+    if(ok) right++;
+    r.classList.toggle("right", ok); r.classList.toggle("wrong", !ok);
+    r.querySelector(".res").innerHTML = ok ? `<span class="mark">O 맞았어요</span>`
+      : `<span class="mark">X</span> 정답: <span class="fix">${it.en}</span>`;
+  });
+  const s = document.getElementById("score"); s.hidden = false; s.textContent = `${right} / 20`;
+};
+document.getElementById("resetTest").onclick = ()=>{
+  inputs.forEach(({r,inp})=>{ inp.value=""; r.classList.remove("right","wrong"); r.querySelector(".res").innerHTML=""; });
+  document.getElementById("score").hidden = true; window.scrollTo({top:0});
+};
 
 /* ---------- Answer key ---------- */
-const tb = document.querySelector("#ansTable tbody");
+const ab = document.getElementById("ansBody");
 ITEMS.forEach(it=>{
-  const q = it.sent ? (it.pre?it.pre+" ":"") + it.sent.replace("___","(　　)") : "그림 보고 단어 쓰기";
-  tb.insertAdjacentHTML("beforeend", `<tr><td>${it.n}</td><td style="font-family:var(--f-en)">${q}</td><td class="a">${it.en}</td><td>${it.ko}</td></tr>`);
+  const q = it.q ? (it.pre?it.pre+" ":"") + it.q.replace("___","(　　)") : "그림 보고 단어 쓰기";
+  ab.insertAdjacentHTML("beforeend", `<tr><td>${it.n}</td><td style="font-family:var(--f-en)">${q}</td><td class="a">${it.en}</td><td>${it.ko}</td></tr>`);
 });
 
-/* ---------- Tabs (hash routing) ---------- */
-const VIEWS = ["words","sentences","quiz","answers"];
+/* ---------- Tabs ---------- */
+const VIEWS = ["words","sentences","test","answers"];
 function route(){
   const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "words";
   document.querySelectorAll("section[data-view]").forEach(s=>s.hidden = s.dataset.view!==v);
