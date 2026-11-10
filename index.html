@@ -94,7 +94,12 @@ button svg{width:20px;height:20px;flex:none}
 .trow .q{font-family:var(--f-en);font-size:clamp(19px,4.6vw,24px);font-weight:700;min-width:0;line-height:1.7}
 .trow .ko{font-size:15px;color:var(--muted);font-family:var(--f-ko);font-weight:400;line-height:1.4}
 .trow .hint{color:var(--bad);font-size:14px;font-family:var(--f-ko);font-weight:400}
-.blank{display:inline-block;width:5.5em;max-width:100%;height:1.1em;vertical-align:-.15em;border-bottom:3px solid var(--rule-pink);margin:0 .15em}
+.blank{display:inline-block;min-width:5.5em;max-width:100%;height:1.4em;vertical-align:-.3em;border-bottom:3px solid var(--rule-pink);margin:0 .15em;text-align:center;line-height:1.15em}
+.blank .ans{color:var(--bad);visibility:hidden}
+.trow.show .blank .ans{visibility:visible}
+.trow.show .blank{border-bottom-color:var(--bad)}
+.trow .see{grid-column:3;justify-self:start}
+.trow.show .see{background:var(--soft)}
 @media (max-width:420px){.trow{grid-template-columns:28px 64px 1fr;gap:6px 8px}.trow .pic{height:54px}.trow .pic img{max-height:54px}}
 
 .warn{background:var(--soft);border-left:4px solid var(--rule-pink);padding:10px 12px;border-radius:8px;font-size:15px}
@@ -129,7 +134,8 @@ button svg{width:20px;height:20px;flex:none}
   </section>
 
   <section data-view="test" hidden>
-    <p class="lead" style="color:var(--ink)">공책에 번호를 쓰고, 빈칸에 들어갈 영어 단어를 적어 보세요.</p>
+    <p class="lead" style="color:var(--ink)">공책에 번호를 쓰고, 빈칸에 들어갈 영어 단어를 적어 보세요. 다 쓰면 <b>정답 보기</b>로 확인해요.</p>
+    <div class="row"><button class="primary" id="showAll" aria-pressed="false">정답 모두 보기</button></div>
     <div class="tlist" id="testList"></div>
   </section>
 
@@ -238,15 +244,27 @@ ITEMS.forEach(it=>{
 
 /* ---------- ③ Blanks to copy into the notebook ---------- */
 const testList = document.getElementById("testList");
-const BLANK = '<span class="blank" aria-label="빈칸"></span>';
 ITEMS.forEach(it=>{
+  const BLANK = `<span class="blank"><span class="ans">${it.en}</span></span>`;
   const ko = it.en==="red" ? "아니. 내 가방은 (　　)이야." : it.en==="it" ? "응, 맞아. (네, 그것은 나의 모자가 맞아요.)" : it.exKo;
   const q = it.q
     ? `${it.pre?it.pre+"<br>":""}${it.q.replace("___", BLANK)}<div class="ko">${ko}</div>`
     : `${BLANK}<div class="ko">${it.ko}</div>`;
   testList.insertAdjacentHTML("beforeend", groupHead(it,"h2") +
-    `<div class="trow"><div class="n">${it.n}</div>${pic(it)}<div class="q">${q}${it.hint?`<div class="hint">${it.hint}</div>`:""}</div></div>`);
+    `<div class="trow"><div class="n">${it.n}</div>${pic(it)}<div class="q">${q}${it.hint?`<div class="hint">${it.hint}</div>`:""}</div><button class="small see" aria-pressed="false">정답 보기</button></div>`);
 });
+const setShow = (row, on)=>{ row.classList.toggle("show", on); const b=row.querySelector(".see"); b.textContent = on?"정답 숨기기":"정답 보기"; b.setAttribute("aria-pressed", on); };
+testList.addEventListener("click", e=>{
+  const b = e.target.closest(".see"); if(!b) return;
+  const row = b.closest(".trow"), on = !row.classList.contains("show");
+  setShow(row, on); if(on) say(row.querySelector(".ans").textContent.toLowerCase(), 0.75);
+});
+const showAll = document.getElementById("showAll");
+showAll.onclick = ()=>{
+  const on = showAll.getAttribute("aria-pressed")!=="true";
+  testList.querySelectorAll(".trow").forEach(r=>setShow(r,on));
+  showAll.setAttribute("aria-pressed",on); showAll.textContent = on?"정답 모두 숨기기":"정답 모두 보기";
+};
 
 /* ---------- 4-line guide alignment ---------- */
 const mctx = document.createElement("canvas").getContext("2d");
